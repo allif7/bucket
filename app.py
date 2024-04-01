@@ -1,14 +1,21 @@
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv
+from http import client
 from flask import Flask, render_template, request, jsonify
 from pymongo import MongoClient
 
-client = MongoClient('mongodb://alip:alip@ac-2cjupig-shard-00-00.pt73tpi.mongodb.net:27017,ac-2cjupig-shard-00-01.pt73tpi.mongodb.net:27017,ac-2cjupig-shard-00-02.pt73tpi.mongodb.net:27017/?ssl=true&replicaSet=atlas-gutbxz-shard-0&authSource=admin&retryWrites=true&w=majority')
-db = client.dbsparta
+dotenv_path = join(dirname(__file__),'.env')
+load_dotenv(dotenv_path)
+MONGODB_URI = os.environ.get("MONGODB_URI")
+DB_NAME = os.environ.get("DB_NAME")
+client = MongoClient(MONGODB_URI)
+db = client[DB_NAME]
 
 app = Flask(__name__)
-
 @app.route('/')
 def home():
-   return render_template('index.html')
+    return render_template('index.html')
 
 @app.route("/bucket", methods=["POST"])
 def bucket_post():
